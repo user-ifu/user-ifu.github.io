@@ -215,7 +215,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2020/10/30/Prim/" class="post-title-link" itemprop="url">Prim</a>
+            <a href="/2020/10/30/Prim/" class="post-title-link" itemprop="url">Prim算法</a>
         </h2>
 
         <div class="post-meta">
@@ -226,7 +226,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2020-10-30 10:36:07 / Modified: 10:40:31" itemprop="dateCreated datePublished" datetime="2020-10-30T10:36:07+08:00">2020-10-30</time>
+              <time title="Created: 2020-10-30 10:36:07 / Modified: 19:23:05" itemprop="dateCreated datePublished" datetime="2020-10-30T10:36:07+08:00">2020-10-30</time>
             </span>
 
           
@@ -238,8 +238,20 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>Prim 1</p>
-
+          <h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>普里姆算法（Prim算法），图论中的一种算法，可在加权连通图里搜索最小生成树。意即由此算法搜索到的边子集所构成的树中，不但包括了连通图里的所有顶点（英语：Vertex (graph theory)），且其所有边的权值之和亦为最小。该算法于1930年由捷克数学家沃伊捷赫·亚尔尼克（英语：Vojtěch Jarník）发现；并在1957年由美国计算机科学家罗伯特·普里姆（英语：Robert C. Prim）独立发现；1959年，艾兹格·迪科斯彻再次发现了该算法。因此，在某些场合，普里姆算法又被称为DJP算法、亚尔尼克算法或普里姆－亚尔尼克算法。</p>
+<h2 id="算法描述"><a href="#算法描述" class="headerlink" title="算法描述"></a>算法描述</h2><ol>
+<li><p>输入：一个加权连通图，其中顶点集合为V，边集合为E；</p>
+</li>
+<li><p>初始化：Vnew = {x}，其中x为集合V中的任一节点（起始点），Enew = {},为空；</p>
+</li>
+<li><p>重复下列操作，直到Vnew = V：</p>
+<p>a. 在集合E中选取权值最小的边&lt;u, v&gt;，其中u为集合Vnew中的元素，而v不在Vnew集合当中，并且v∈V（如果存在有多条满足前述条件即具有相同权值的边，则可任意选取其中之一）；</p>
+<p>b. 将v加入集合Vnew中，将&lt;u, v&gt;边加入集合Enew中；</p>
+</li>
+<li><p>输出：使用集合Vnew和Enew来描述所得到的最小生成树。</p>
+</li>
+</ol>
+<p><img src="/2020/10/30/Prim/prim.jpg" class title="name}&lt;&#x2F;p&gt; &lt;p&gt;​ 以上都是数学上的解释，对于初学者而言不太友好。接下来根据上图对算法进行具体描述，相信很快就会理解Prim算法的过程。&lt;&#x2F;p&gt; &lt;p&gt;​ 上图为加权联通图以及邻接矩阵，每一边上的数字代表其权值。&lt;&#x2F;p&gt; &lt;p&gt;​ 首先任意选择一个顶点作为起始点，在在里我们选择顶点V0（当然任何的顶点都可以），然后选择距离V0最近的点，首先找到与V0相连的点，V1和V5，其中V1和V0的距离更近，为10，由此我们得到了图V0,V1以及在V0和v1之间的长为10的边，将此部分选中称为“选中图”，然后继续寻找到“选择图”距离最近的点，找到V8，将V8和长为12的边加入到“选中树”中，继续遍历。直至所有顶点都囊括在“选中树“中。&lt;&#x2F;p&gt; &lt;p&gt;​ 接下来是代码部分&lt;&#x2F;p&gt; <figure class=" highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//prim算法生成最小生成树</span></span><br><span class="line"><span class="function">viod <span class="title">MiniSpanTree_Prim</span><span class="params">(MGraph G)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> min,i,j,k;</span><br><span class="line">    <span class="keyword">int</span> adjvex[MAXVEX]; <span class="comment">//保留相关顶点的下标</span></span><br><span class="line">    <span class="keyword">int</span> lowcost[MAXVEX];<span class="comment">//保存相关顶点间边的权值</span></span><br><span class="line">    </span><br><span class="line">    lowcost[<span class="number">0</span>]=<span class="number">0</span>;<span class="comment">//V0作为最小生成树的根开始遍历，权值为0</span></span><br><span class="line">    adjvex[<span class="number">0</span>]=<span class="number">0</span>;<span class="comment">//V0第一个加入</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">//初始化操作</span></span><br><span class="line">    <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;G.numVertexes;i++)</span><br><span class="line">    &#123;</span><br><span class="line">        loecost[i]=G.arc[<span class="number">0</span>][i];<span class="comment">//将矩阵第0行的所有权值先加入数组</span></span><br><span class="line">        adjvex[i]=<span class="number">0</span>;<span class="comment">//初始化全部先为V0的下标      </span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//真正构造最小生成树的过程</span></span><br><span class="line">    <span class="keyword">for</span> (i=<span class="number">0</span>;i&lt;G.numVertexes;i++)</span><br><span class="line">    &#123;</span><br><span class="line">        min = INFINITY;<span class="comment">//c初始化最小权值为65530等不可能数值</span></span><br><span class="line">        <span class="comment">//当两个顶点没有直通是，用无限大表示为联通，若联通则用去权值表示</span></span><br><span class="line">        j=<span class="number">1</span>;</span><br><span class="line">        k=<span class="number">0</span>;</span><br><span class="line">        <span class="comment">//遍历全部顶点</span></span><br><span class="line">        <span class="keyword">while</span>(j&lt;G.numVertexes)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">//找出lowcost数组中已经存储的最小权值</span></span><br><span class="line">            <span class="keyword">if</span>(lowcost[j]!=<span class="number">0</span> &amp;&amp; lowcost[j]&lt;min)</span><br><span class="line">            &#123;</span><br><span class="line">                nin = lowcost[j];</span><br><span class="line">                k=j;<span class="comment">//将发现的最小权值分下标存入k，以待使用</span></span><br><span class="line">            &#125;</span><br><span class="line">            j++;</span><br><span class="line">        <span class="comment">//打印当前顶点边中权值最小的边使用(顶点--&gt;下一个顶点)的方式    </span></span><br><span class="line">        print(&#x27;%d--&gt;%d&#x27;,adjvex[k],k);</span><br><span class="line">        lowcost[k]=<span class="number">0</span>;<span class="comment">//将当前顶点的权值设为0，表示此顶点已经完成任务，进行下一个顶点的遍历</span></span><br><span class="line">        <span class="comment">//邻接矩阵第k行逐个遍历比较，找出较小值，存入lowcost数组</span></span><br><span class="line">        <span class="keyword">for</span>(j=<span class="number">1</span>;j&lt;G.numVertexes;j++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(lowcost[j]!=<span class="number">0</span> &amp;&amp; G.arc[k][j]&lt;lowcost[j])</span><br><span class="line">            &#123;</span><br><span class="line">                lowcost[j]=G.arc[k][j];</span><br><span class="line">                adjvex[j]=k;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;          </span><br><span class="line">&#125;</span><br></pre></td></tr></table> &lt;p&gt;Prim算法使用了贪心算法，每一步都找到最小值。&lt;&#x2F;p&gt;"></p>
       
     </div>
 
